@@ -1,6 +1,7 @@
 /**
  * Wuhdul — main game component.
  * Designed & built by Harshith Gupta (@progharshith).
+ * https://github.com/progharshith
  */
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -16,6 +17,28 @@ const KEYBOARD_ROWS = [
   ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
   ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "⌫"],
 ];
+
+const INVALID_WORD_MESSAGES = [
+  "we don't know that word.",
+  "and that means what exactly?",
+  "not in the word list.",
+  "not a word.",
+  "not quite.",
+  "doesn't ring a bell.",
+];
+
+const WIN_MESSAGES: Record<number, string> = {
+  1: "okay.",
+  2: "nice.",
+  3: "clean.",
+  4: "good.",
+  5: "close one.",
+  6: "barely.",
+};
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export default function Wordle() {
   const [answer, setAnswer] = useState(() => getRandomWord());
@@ -33,14 +56,14 @@ export default function Wordle() {
 
   const submitGuess = useCallback(() => {
     if (currentGuess.length !== WORD_LENGTH) {
-      showMessage("Not enough letters");
+      showMessage("not enough letters.");
       setShakeRow(true);
       setTimeout(() => setShakeRow(false), 500);
       return;
     }
 
     if (!VALID_WORDS.has(currentGuess.toLowerCase())) {
-      showMessage("Not in word list");
+      showMessage(pickRandom(INVALID_WORD_MESSAGES));
       setShakeRow(true);
       setTimeout(() => setShakeRow(false), 500);
       return;
@@ -59,7 +82,8 @@ export default function Wordle() {
     if (currentGuess.toLowerCase() === answer) {
       setGameOver(true);
       setWon(true);
-      showMessage("Brilliant!", 3000);
+      const msg = WIN_MESSAGES[newGuesses.length] ?? "nice.";
+      showMessage(msg, 3000);
     } else if (newGuesses.length >= MAX_GUESSES) {
       setGameOver(true);
       showMessage(answer.toUpperCase(), 5000);
@@ -100,7 +124,6 @@ export default function Wordle() {
 
   const keyStatuses = getKeyboardStatuses(guesses);
 
-  // Build grid
   const gridRows: TileData[][] = [];
   for (let i = 0; i < MAX_GUESSES; i++) {
     if (i < guesses.length) {
@@ -120,7 +143,6 @@ export default function Wordle() {
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-background text-foreground select-none">
-      {/* Header */}
       <header className="w-full border-b border-border py-3 px-4 relative flex items-center justify-center">
         <h1 className="text-lg font-bold tracking-[0.2em] uppercase">Wuhdul</h1>
         <Link
@@ -131,14 +153,12 @@ export default function Wordle() {
         </Link>
       </header>
 
-      {/* Toast */}
       {message && (
-        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background px-4 py-2 text-sm font-bold">
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background px-4 py-2 text-sm font-bold lowercase">
           {message}
         </div>
       )}
 
-      {/* Grid */}
       <div className="flex flex-col gap-[4px] py-4">
         {gridRows.map((row, ri) => (
           <div
@@ -152,7 +172,6 @@ export default function Wordle() {
         ))}
       </div>
 
-      {/* Bottom area */}
       <div className="w-full max-w-[500px] px-2 pb-3">
         {gameOver && (
           <button
@@ -176,6 +195,12 @@ export default function Wordle() {
             </div>
           ))}
         </div>
+        <p className="mt-3 text-center text-[10px] tracking-wider text-muted-foreground/50 lowercase select-none">
+          built by{" "}
+          <Link to="/about" className="hover:text-muted-foreground transition-colors">
+            harshith
+          </Link>
+        </p>
       </div>
     </div>
   );

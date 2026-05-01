@@ -45,7 +45,10 @@ const About = () => {
           </p>
         </div>
 
-        <section className="mt-10 animate-fade-up" style={{ animationDelay: "400ms" }}>
+        <section
+          className="mt-10 animate-fade-up"
+          style={{ animationDelay: "400ms" }}
+        >
           <h2 className="text-sm font-bold uppercase tracking-wider mb-3">links</h2>
           <ul className="space-y-1 text-base lowercase">
             <li>
