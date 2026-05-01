@@ -3,6 +3,7 @@
  * Designed & built by Harshith Gupta (@progharshith).
  */
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { TileData, LetterStatus, evaluateGuess, getKeyboardStatuses } from "@/lib/wordle";
 import { getRandomWord } from "@/lib/words";
 import { VALID_WORDS } from "@/lib/valid-words";
@@ -120,8 +121,14 @@ export default function Wordle() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-background text-foreground select-none">
       {/* Header */}
-      <header className="w-full border-b border-border py-3 text-center">
+      <header className="w-full border-b border-border py-3 px-4 relative flex items-center justify-center">
         <h1 className="text-lg font-bold tracking-[0.2em] uppercase">Wuhdul</h1>
+        <Link
+          to="/about"
+          className="absolute left-4 text-xs font-mono tracking-wider text-muted-foreground hover:text-foreground transition-colors lowercase"
+        >
+          about
+        </Link>
       </header>
 
       {/* Toast */}
